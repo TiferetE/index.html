@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>מבחן סוכרת הריון</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
+            min-height: 100vh;
+        }
+        .quiz-container {
+            display: flex;
+            align-items: flex-start;
+            gap: 20px;
+        }
+        #question-container {
+            flex: 1;
+        }
+        #question {
+            margin-bottom: 20px;
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+            font-size: 1.4em;
+        }
+        button {
+            display: block;
+            width: 100%;
+            margin-bottom: 10px;
+            padding: 10px;
+            background-color: #f3e5f5;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            font-size: 1.2em;
+        }
+        button:hover {
+            background-color: #ce93d8;
+        }
+        #result {
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            font-size: 1.2em;
+        }
+        .image-container {
+            flex: 0 0 300px;
+        }
+        .image-container img {
+            width: 100%;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        .image-container img:last-child {
+            max-height: 200px;
+            object-fit: contain;
+        }
+    </style>
+</head>
+<body>
+    <h1>מבחן סוכרת הריון</h1>
+    <div class="quiz-container">
+        <div id="question-container">
+            <div id="question"></div>
+            <div id="answers"></div>
+        </div>
+        <div class="image-container">
+            <img src="סוכרת הריון.jpg" alt="סוכרת הריון">
+            <img src="לומדים_סוכרת1-removebg-preview.png" alt="לומדים סוכרת">
+        </div>
+    </div>
+    <div id="result" style="display:none;"></div>
+
+    <script>
+        const questions = [
+            {
+                question: "באיזה שבוע בתקופת ההיריון מבוצעת בדיקת OGTT?",
+                answers: ["תחילת ההיריון", "שבוע 26", "שבוע 12", "שבוע 30"],
+                correct: 1
+            },
+            {
+                question: "אישה שחוותה סוכרת הריונית, אמורה לבצע בדיקות סקר לגילוי סוכרת במהלך חייה, מה התדירות שאמורה לבצע?",
+                answers: ["כל 1-3 שנים", "כל 6 חודשים", "רק אחרי 6 שבועות ואז כל 6 שנים", "12 חודשים"],
+                correct: 0
+            },
+            {
+                question: "מהו יעד HBA1C הרצוי עבור אישה בהריון עם סוכרת הריונית?",
+                answers: ["6%", "מתחת ל 7%", "מתחת ל 7.5%", "מתחת ל 6.5%"],
+                correct: 3
+            },
+            {
+                question: "מה יומלץ ליולדת שלקתה בסוכרת הריונית בשחרור מבית החולים?",
+                answers: ["העמסת 100 גרם סוכר חודשיים לאחר הלידה", "המוגלובין A1C שלושה שבועות לאחר הלידה", "העמסת 75 גרם גלוקוז שישה שבועות לאחר הלידה", "העמסת 50 גרם גלוקוז חודשיים לאחר הלידה"],
+                correct: 2
+            },
+            {
+                question: "באיזה שלב של ההיריון התנגודת לאינסולין היא מקסימלית?",
+                answers: ["שליש הראשון להריון", "שליש השני להריון", "לאחר הלידה", "שליש השלישי להריון"],
+                correct: 3
+            },
+            {
+                question: "אישה עם סוכרת הריון מאוזנת מבקשת לדעת מה צפוי לה בעת הלידה. מה יהיה נכון להסביר לרוב הנשים במצבה?",
+                answers: ["יולדות בדרך כלל בניתוח קיסרי אלקטיבי", "לרוב יולדות במועד המשוער", "מקבלות זירוז על מנת ללדת לפני המועד", "נהוג לבצע ניתוח קיסרי במועד"],
+                correct: 1
+            },
+            {
+                question: "מה נכון לגבי שכיחות סוכרת בהריון?",
+                answers: ["שכיחותה יורדת בשנים האחרונות בעקבות המודעות הגוברת", "שכיחות סוכרת הריונית הינה כ6-7% מכלל ההריונות והיא מהווה כ 90% ממקרי הסוכרת בהריון", "שכיחות סוכרת הריונית נמצאת ביחס ישר לשכיחות סוכרת מסוג 2 באוכלוסייה", "תשובות ב וג נכונות"],
+                correct: 3
+            },
+            {
+                question: "מהם ערכי הגלוקוז המומלצים לנשים עם GDM?",
+                answers: ["בצום מתחת ל95 שעתיים לאחר האוכל מתחת ל120", "בצום מתחת ל90 שעתיים לאחר האוכל מתחת ל140", "בצום מתחת ל100 שעתיים לאחר האוכל מתחת ל120", "בצום מתחת ל80 שעתיים לאחר האוכל מתחת ל110"],
+                correct: 0
+            },
+            {
+                question: "מה נכון לגבי DKA בהריון?",
+                answers: ["DKA מהווה הוריה לילוד מיידי אם הוא מופיע בשבוע 28 והילך.", "DKA מתרחש בשיעור של 20% מהנשים עם סוכרת מסוג 1 ומהווה גורם סיכון משמעותי למוות עוברי", "ההתייצגות האבחון והטיפול ב DKA בהריון אינו שונה מDKA ללא הריון ויש לפעול לפי ההנחיות המקובלות", "בשל עליית מינוני האינסולין בזמן ההיריון גובר הסיכון לפתח DKA"],
+                correct: 2
+            },
+            {
+                question: "מה נכון לגבי מעקב הריון אצל נשים עם סוכרת טרום הריונית?",
+                answers: ["בנשים עם סוכרת טרום הריונית מעקב עוברי יכלול, בנוסף לבדיקות שגרתיות: סקירת מערכות מורחבת, אקו לב ומעקב גדילה", "כל עוד הסוכרת מאוזנת אין צורך במעקב נוסף", "מעקב נוסף יתבצע על פי שיקול הרופא המטפל רק כאשר הסוכרת אינה מאוזנת", "אין תשובה נכונה"],
+                correct: 0
+            },
+            {
+                question: "מה נכון לגבי פעילות האינסולין בהריון?",
+                answers: ["ישנה ירידה ברגישות לאינסולין בעקבות הורמונים המעלים תנגודת לאינסולין", "קורטיזול, פרוגסטרון והורמון גדילה מעלים תנגודת לאינסולין ואילו פרולקטין וסומטוטרופין מורידים תנגודת לאינסולין", "ישנה עליה ברגישות לאינסולין בעקבות הורמונים המעלים תנגודת לאינסולין", "במהלך ההיריון לעיתים יש ירידה בפעילות הגופנית ועליה בצריכה הקלורית מה שמוביל לעליה ברגישות לאינסולין בגוף"],
+                correct: 0
+            },
+            {
+                question: "מה נכון גבי בדיקת GCT?",
+                answers: ["מבוצעת בין שבוע 24-28 להריון", "אינה דורשת צום", "הסף לביצוע בדיקה אבחנתית הוא בין 130-140", "כל התשובות נכונות"],
+                correct: 3
+            },
+            {
+                question: "מה מגביר את הסיכון לפתח סוכרת הריונית?",
+                answers: ["הסיכון גבוה יותר בנשים צעירות", "ירידה מהירה במשקלה של האישה מעלה את הסיכון", "מקרוזומיה (ללא סוכרת הריונית) בהריון קודם מעלה את הסיכון", "מום פתוח בתעלה העצבית בהריון קודם מעלה את הסיכון בעתיד"],
+                correct: 2
+            },
+            {
+                question: "מהו הטיפול המועדף עבור נשים בהריון עם סוכרת הריון שאינן משיגות איזון גליקמי בעזרת דיאטה ופעילות גופנית?",
+                answers: ["מטפורמין", "אינסולין", "גליבוריד", "אינקרטינים"],
+                correct: 1
+            },
+            {
+                question: "מהו הטווח המומלץ של רמות סוכר שעתיים לאחר ארוחה עבור נשים עם סוכרת הריון?",
+                answers: ["מתחת ל-120 מ\"ג/ד\"ל", "מתחת ל-130 מ\"ג/ד\"ל", "מתחת ל-140 מ\"ג/ד\"ל", "מתחת ל-150 מ\"ג/ד\"ל"],
+                correct: 0
+            },
+            {
+                question: "מהו הסיבוך האימהי השכיח ביותר בסוכרת הריון לא מאוזנת?",
+                answers: ["פרה-אקלמפסיה", "דיכאון אחרי לידה", "פגיעה בכבד", "אוסטאופורוזיס"],
+                correct: 0
+            }
+        ];
+
+        let currentQuestion = 0;
+        let score = 0;
+
+        function displayQuestion() {
+            const questionEl = document.getElementById('question');
+            const answersEl = document.getElementById('answers');
+            const question = questions[currentQuestion];
+
+            questionEl.textContent = question.question;
+            answersEl.innerHTML = '';
+
+            question.answers.forEach((answer, index) => {
+                const button = document.createElement('button');
+                button.textContent = answer;
+                button.onclick = () => selectAnswer(index);
+                answersEl.appendChild(button);
+            });
+        }
+
+        function selectAnswer(answerIndex) {
+            if (answerIndex === questions[currentQuestion].correct) {
+                score++;
+            }
+
+            currentQuestion++;
+
+            if (currentQuestion < questions.length) {
+                displayQuestion();
+            } else {
+                showResult();
+            }
+        }
+
+        function showResult() {
+            const quizEl = document.querySelector('.quiz-container');
+            const resultEl = document.getElementById('result');
+            
+            quizEl.style.display = 'none';
+            resultEl.style.display = 'block';
+            const percentage = (score / questions.length) * 100;
+            resultEl.textContent = `סיימת את המבחן! הציון שלך הוא: ${percentage.toFixed(0)}%`;
+        }
+
+        displayQuestion();
+    </script>
+</body>
+</html>
